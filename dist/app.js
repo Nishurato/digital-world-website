@@ -14,9 +14,18 @@ const data = {
   initialization: { title: 'INITITALIZATION', description: 'Initializing a new digital world' },
   unknown: { title: '?', description: '?', unknown: true },
 };
-// Profile destinations can be supplied here without changing the layout.
-const socialLinks = { youtube: null, tiktok: null, soundcloud: null, bandcamp: null, tumblr: null };
+const socialLinks = {
+  youtube: 'https://www.youtube.com/@Nishurato',
+  tiktok: 'https://www.tiktok.com/@nishurato',
+  soundcloud: 'https://soundcloud.com/nishurato',
+  bandcamp: 'https://nishurato.bandcamp.com/',
+  tumblr: 'https://www.tumblr.com/nishurato-blog',
+};
 document.querySelectorAll('[data-social]').forEach(a => {
+  for (const layout of ['desktop', 'mobile']) {
+    const icon = a.querySelector(`.${layout}-asset`);
+    a.style.setProperty(`--social-icon-${layout}`, `url("${icon.getAttribute('src')}")`);
+  }
   const url = socialLinks[a.dataset.social];
   if (url) { a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; }
   else { a.removeAttribute('href'); a.setAttribute('aria-disabled', 'true'); a.title = `${a.getAttribute('aria-label')} — link not provided`; }
@@ -32,21 +41,24 @@ function updateConnection() {
   // Measure in world coordinates: pan and zoom then move both nodes and line together.
   const [first, second] = nodes.map(node => {
     const style = getComputedStyle(node);
+    const shape = mobile ? null : getComputedStyle(node.querySelector('.node-shape'));
     return {
       x: parseFloat(style.left),
       y: parseFloat(style.top),
       width: parseFloat(style.width),
       height: parseFloat(style.height),
+      edgeLeft: shape ? parseFloat(style.left) + parseFloat(shape.left) : null,
+      edgeRight: shape ? parseFloat(style.left) + parseFloat(shape.left) + parseFloat(shape.width) : null,
     };
   });
   // One SVG coordinate system for both endpoints, without rotating/scaling an image.
-  // On desktop the connector sits slightly below the nodes' centre line.
+  // Connect facing edges: right/left on desktop, bottom/top on mobile.
   const start = mobile
-    ? { x: first.x + first.width / 2, y: first.y + first.height / 2 }
-    : { x: first.x + 4, y: first.y + first.height / 2 };
+    ? { x: first.x + first.width / 2, y: first.y + first.height }
+    : { x: first.edgeRight, y: first.y + first.height / 2 };
   const end = mobile
-    ? { x: start.x, y: second.y + second.height / 2 }
-    : { x: second.x + second.width / 2, y: start.y };
+    ? { x: second.x + second.width / 2, y: second.y }
+    : { x: second.edgeLeft, y: second.y + second.height / 2 };
   const connection = document.querySelector('.connection');
   connection.setAttribute('viewBox', `0 0 ${mobile ? 720 : 1920} ${height}`);
   const line = connection.querySelector('line');
@@ -172,9 +184,12 @@ field.addEventListener('keydown', e => {
 document.addEventListener('keydown', e => { if (e.key === 'Escape') hidePanel(); });
 addEventListener('resize',resize);
 resize();
-// Recalculate when the node layout changes; selection does not move the line's axis.
+// Shape widths change throughout selection transitions, so track those frames too.
 const connectionObserver = new ResizeObserver(updateConnection);
-nodes.forEach(node => connectionObserver.observe(node));
+nodes.forEach(node => {
+  connectionObserver.observe(node);
+  connectionObserver.observe(node.querySelector('.node-shape'));
+});
 // Progress reflects actual local image and font readiness.
 async function load() {
   scene.inert = true;
