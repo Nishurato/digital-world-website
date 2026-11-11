@@ -15,15 +15,16 @@
   <main id="scene" aria-label="Digital World">
     <div id="field" tabindex="0" aria-label="Interactive map. Drag to move, scroll or pinch to zoom. Use arrow keys to move, plus and minus to zoom, Home to reset.">
       <div id="world">
-        <div class="connection" aria-hidden="true"><img class="desktop-asset" src="assets/desktop-line1.svg" alt=""><img class="mobile-asset" src="assets/mobile-line1.svg" alt=""></div>
+        <svg class="connection" aria-hidden="true" focusable="false">
+          <defs><linearGradient id="connection-color"><stop offset="62%" stop-color="#0000ff"/><stop offset="100%" stop-color="#515151"/></linearGradient></defs>
+          <line class="connection-stroke" stroke="url(#connection-color)" stroke-width="10" stroke-linecap="butt"/>
+        </svg>
         <button class="node" id="initialization" aria-controls="details" aria-expanded="false" aria-pressed="false"><span class="node-shape"></span><span class="node-dot"><img src="assets/selected-ellipse1.svg" alt=""></span><span class="node-label">INITITALIZATION</span></button>
         <button class="node unknown" id="unknown" aria-label="Unknown node" aria-controls="details" aria-expanded="false" aria-pressed="false"><span class="node-shape"></span><span class="node-dot"><img src="assets/selected-ellipse1.svg" alt=""></span><span class="node-label">?</span></button>
       </div>
     </div>
     <header>
-      <div class="header-line start"><img src="assets/desktop-line2.svg" alt=""></div>
-      <div class="header-line diagonal"><img src="assets/desktop-line3.svg" alt=""></div>
-      <div class="header-line end"><img src="assets/desktop-line4.svg" alt=""></div>
+      <div class="header-line desktop-rule"><img src="assets/header-rule.svg" alt=""></div>
       <div class="header-line mobile-rule"><img src="assets/mobile-line4.svg" alt=""></div>
       <h1>NISHURATO</h1><p>DIGITAL WORLD</p>
     </header>

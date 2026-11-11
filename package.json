@@ -2,5 +2,8 @@
   "name": "digital-world-website",
   "private": true,
   "type": "module",
-  "scripts": { "dev": "node server.mjs", "check": "node --check dist/app.js" }
+  "scripts": {
+    "dev": "node server.mjs",
+    "check": "node --check dist/app.js && node scripts/check-site.mjs"
+  }
 }

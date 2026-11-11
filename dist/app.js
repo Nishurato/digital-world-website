@@ -3,6 +3,8 @@ const field = document.querySelector('#field');
 const world = document.querySelector('#world');
 const panel = document.querySelector('#details');
 const nodes = [...document.querySelectorAll('.node')];
+document.querySelectorAll('img').forEach(img => { img.draggable = false; });
+scene.addEventListener('dragstart', e => e.preventDefault());
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 let fit = 1, mobile = false, height = 1080;
 let view = { x: 0, y: 0, zoom: 1 }, savedView = null;
@@ -26,6 +28,37 @@ function renderView(animate = false) {
   field.style.backgroundSize = `${major}px ${major}px,${major}px ${major}px,${step}px ${step}px,${step}px ${step}px`;
   field.style.backgroundPosition = `${view.x}px ${view.y}px`;
 }
+function updateConnection() {
+  // Measure in world coordinates: pan and zoom then move both nodes and line together.
+  const [first, second] = nodes.map(node => {
+    const style = getComputedStyle(node);
+    return {
+      x: parseFloat(style.left),
+      y: parseFloat(style.top),
+      width: parseFloat(style.width),
+      height: parseFloat(style.height),
+    };
+  });
+  // One SVG coordinate system for both endpoints, without rotating/scaling an image.
+  // On desktop the connector sits slightly below the nodes' centre line.
+  const start = mobile
+    ? { x: first.x + first.width / 2, y: first.y + first.height / 2 }
+    : { x: first.x + 4, y: first.y + first.height / 2 };
+  const end = mobile
+    ? { x: start.x, y: second.y + second.height / 2 }
+    : { x: second.x + second.width / 2, y: start.y };
+  const connection = document.querySelector('.connection');
+  connection.setAttribute('viewBox', `0 0 ${mobile ? 720 : 1920} ${height}`);
+  const line = connection.querySelector('line');
+  for (const [attribute, value] of Object.entries({ x1: start.x, y1: start.y, x2: end.x, y2: end.y })) {
+    line.setAttribute(attribute, value);
+  }
+  const gradient = connection.querySelector('linearGradient');
+  gradient.setAttribute('gradientUnits', 'userSpaceOnUse');
+  for (const [attribute, value] of Object.entries({ x1: start.x, y1: start.y, x2: end.x, y2: end.y })) {
+    gradient.setAttribute(attribute, value);
+  }
+}
 function resize() {
   const nextMobile = innerWidth <= 760;
   if (nextMobile !== mobile) { view = { x: 0, y: 0, zoom: 1 }; savedView = null; }
@@ -35,8 +68,7 @@ function resize() {
   scene.style.height = `${height}px`;
   scene.style.setProperty('--height', `${height}px`);
   scene.style.transform = `scale(${fit})`;
-  const connection = document.querySelector('.connection');
-  connection.style.scale = mobile ? `${height * .41859 / 653} 1` : '1';
+  updateConnection();
   renderView();
 }
 function hidePanel(restore = true) {
@@ -95,7 +127,9 @@ function beginGesture() { gesture = { ...metrics(), view: { ...view } }; }
 field.addEventListener('pointerdown', e => {
   if (e.button !== 0) return;
   pointers.set(e.pointerId, point(e));
-  if (!e.target.closest('.node')) field.setPointerCapture(e.pointerId);
+  // Capture on the node for clicks, or the field for background drags.
+  // Either way the gesture continues if the pointer leaves its starting element.
+  (e.target.closest('.node') || field).setPointerCapture(e.pointerId);
   if (pointers.size === 1) suppressClick = false;
   beginGesture();
 });
@@ -138,6 +172,9 @@ field.addEventListener('keydown', e => {
 document.addEventListener('keydown', e => { if (e.key === 'Escape') hidePanel(); });
 addEventListener('resize',resize);
 resize();
+// Recalculate when the node layout changes; selection does not move the line's axis.
+const connectionObserver = new ResizeObserver(updateConnection);
+nodes.forEach(node => connectionObserver.observe(node));
 // Progress reflects actual local image and font readiness.
 async function load() {
   scene.inert = true;
