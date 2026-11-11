@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0000ff">
+  <meta name="description" content="Nishurato — explore a new digital world.">
+  <title>Nishurato — Digital World</title>
+  <link rel="preload" href="assets/nishu-tech.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/eurostile-wide-semibold.otf" as="font" type="font/otf" crossorigin>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <main id="scene" aria-label="Digital World">
+    <div id="field" tabindex="0" aria-label="Interactive map. Drag to move, scroll or pinch to zoom. Use arrow keys to move, plus and minus to zoom, Home to reset.">
+      <div id="world">
+        <div class="connection" aria-hidden="true"><img class="desktop-asset" src="assets/desktop-line1.svg" alt=""><img class="mobile-asset" src="assets/mobile-line1.svg" alt=""></div>
+        <button class="node" id="initialization" aria-controls="details" aria-expanded="false" aria-pressed="false"><span class="node-shape"></span><span class="node-dot"><img src="assets/selected-ellipse1.svg" alt=""></span><span class="node-label">INITITALIZATION</span></button>
+        <button class="node unknown" id="unknown" aria-label="Unknown node" aria-controls="details" aria-expanded="false" aria-pressed="false"><span class="node-shape"></span><span class="node-dot"><img src="assets/selected-ellipse1.svg" alt=""></span><span class="node-label">?</span></button>
+      </div>
+    </div>
+    <header>
+      <div class="header-line start"><img src="assets/desktop-line2.svg" alt=""></div>
+      <div class="header-line diagonal"><img src="assets/desktop-line3.svg" alt=""></div>
+      <div class="header-line end"><img src="assets/desktop-line4.svg" alt=""></div>
+      <div class="header-line mobile-rule"><img src="assets/mobile-line4.svg" alt=""></div>
+      <h1>NISHURATO</h1><p>DIGITAL WORLD</p>
+    </header>
+    <footer aria-label="Social media">
+      <a aria-label="YouTube" data-social="youtube"><img class="desktop-asset" src="assets/desktop-youtube.svg" alt=""><img class="mobile-asset" src="assets/mobile-youtube.svg" alt=""></a>
+      <a aria-label="TikTok" data-social="tiktok"><img class="desktop-asset" src="assets/desktop-tiktok.svg" alt=""><img class="mobile-asset" src="assets/mobile-tiktok.svg" alt=""></a>
+      <a aria-label="SoundCloud" data-social="soundcloud"><img class="desktop-asset" src="assets/desktop-soundcloud.svg" alt=""><img class="mobile-asset" src="assets/mobile-soundcloud.svg" alt=""></a>
+      <a aria-label="Bandcamp" data-social="bandcamp"><img class="desktop-asset" src="assets/desktop-bandcamp.svg" alt=""><img class="mobile-asset" src="assets/mobile-bandcamp.svg" alt=""></a>
+      <a aria-label="Tumblr" data-social="tumblr"><img class="desktop-asset" src="assets/desktop-tumblr.svg" alt=""><img class="mobile-asset" src="assets/mobile-tumblr.svg" alt=""></a>
+    </footer>
+    <aside id="details" inert aria-hidden="true" aria-labelledby="detail-title">
+      <div class="panel-heading"><h2 id="detail-title">INITITALIZATION</h2><button id="close" aria-label="Close information panel"><img class="desktop-asset" src="assets/panel-closeicon.svg" alt=""><img class="mobile-asset" src="assets/mobile-panel-closeicon.svg" alt=""></button></div>
+      <div class="panel-content"><picture id="avatar"><source media="(max-width: 760px)" srcset="assets/mobile-panel-avatar1.png"><img src="assets/panel-avatar1.png" alt="Translucent blue cube with small floating cubes"></picture><p id="detail-description">Initializing a new digital world</p></div>
+    </aside>
+  </main>
+  <div id="loader" role="status" aria-label="Loading website">
+    <div class="loading-inner"><p>LOADING...</p><div id="progress" role="progressbar" aria-label="Loading assets" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-fill"></div><span class="percentage">0%</span><span class="percentage inverse" aria-hidden="true">0%</span></div></div>
+  </div>
+  <noscript>This interactive map requires JavaScript. Please enable JavaScript to explore the Digital World.</noscript>
+</body>
+</html>
