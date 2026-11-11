@@ -98,8 +98,8 @@ function selectNode(id) {
   selected = id;
   nodes.forEach(n => { n.classList.toggle('selected', n.id === id); n.setAttribute('aria-pressed', String(n.id === id)); });
   if (wasOpen && panelNode === id) return;
-  if (!savedView) savedView = { ...view };
   if (!mobile) {
+    if (!savedView) savedView = { ...view };
     const x = id === 'initialization' ? 121 : 1633;
     view.x = 768 - x * view.zoom;
     view.y = height * .485185 - height * .441667 * view.zoom;
